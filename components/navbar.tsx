@@ -29,12 +29,15 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <img 
-              src="/logo.png" 
-              alt="BIKES4U Hyderabad" 
-              className="h-12 w-auto"
-            />
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="relative">
+              <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <img 
+                src="/logo.png" 
+                alt="BIKES4U Hyderabad" 
+                className="relative h-14 w-auto drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
           </Link>
 
           {/* Desktop Search Bar */}
