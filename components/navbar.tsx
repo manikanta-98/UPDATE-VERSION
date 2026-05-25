@@ -21,7 +21,7 @@ export function Navbar() {
   const { theme, setTheme } = useTheme()
 
   const handleWhatsApp = () => {
-    window.open("https://wa.me/919876543210?text=Hi! I'm interested in bikes at BIKES4u", "_blank")
+    window.open("https://wa.me/919676499794?text=Hi! I'm interested in bikes at BIKES4u", "_blank")
   }
 
   return (

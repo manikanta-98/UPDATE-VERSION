@@ -16,7 +16,7 @@ export function BikeCard({ bike }: BikeCardProps) {
 
   const handleWhatsApp = () => {
     const message = `Hi! I'm interested in the ${bike.year} ${bike.brand} ${bike.name} (${bike.registrationNumber}) listed at ₹${bike.price.toLocaleString("en-IN")} on BIKES4u.`
-    window.open(`https://wa.me/919876543210?text=${encodeURIComponent(message)}`, "_blank")
+    window.open(`https://wa.me/919676499794?text=${encodeURIComponent(message)}`, "_blank")
   }
 
   const formatPrice = (price: number) => {

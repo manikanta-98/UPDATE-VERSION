@@ -31,7 +31,7 @@ const socialLinks = [
 
 export function Footer() {
   const handleWhatsApp = () => {
-    window.open("https://wa.me/919876543210?text=Hi! I'm interested in bikes at BIKES4u", "_blank")
+    window.open("https://wa.me/919676499794?text=Hi! I'm interested in bikes at BIKES4u", "_blank")
   }
 
   return (
@@ -102,17 +102,18 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <span className="text-sm text-muted-foreground">
-                  123 Bike Street, Auto Nagar,<br />
-                  Mumbai, Maharashtra 400001
+                  BIKES4u, Goodsheds Road,<br />
+                  Beside Sub Registrar Office,<br />
+                  Moosapet, Hyderabad
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary shrink-0" />
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+919676499794"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  +91 98765 43210
+                  +91 96764 99794
                 </a>
               </li>
               <li className="flex items-center gap-3">
