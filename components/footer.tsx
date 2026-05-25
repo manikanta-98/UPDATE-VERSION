@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Bike, MapPin, Phone, Mail, MessageCircle, Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+import { MapPin, Phone, Mail, MessageCircle, Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const quickLinks = [
@@ -42,12 +42,11 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                <Bike className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold tracking-tight">
-                BIKES<span className="text-primary">4u</span>
-              </span>
+              <img 
+                src="/logo.png" 
+                alt="BIKES4U Hyderabad" 
+                className="h-16 w-auto"
+              />
             </Link>
             <p className="text-sm text-muted-foreground">
               {"Hyderabad's"} trusted destination for buying, selling, and exchanging quality second-hand bikes. Every bike is verified and comes with complete documentation.
