@@ -173,6 +173,9 @@ export async function login(req, res) {
       return res.status(401).json({ success: false, message: "Invalid email/phone or password" });
     }
 
+    user.lastLogin = new Date();
+    await user.save();
+
     const token = signToken(user);
     return res.json({
       success: true,

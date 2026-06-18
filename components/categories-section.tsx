@@ -1,46 +1,74 @@
 "use client"
 
-import { Zap, Bike, Car, Battery } from "lucide-react"
-import { categories } from "@/lib/data"
+import { Bike, Battery, Zap, Wind } from "lucide-react"
 
-const iconMap = {
-  Zap: Zap,
-  Bike: Bike,
-  Car: Car,
-  Battery: Battery,
+import { useInventory } from "@/components/providers/inventory-provider"
+import Link from "next/link"
+
+function getCategoryIcon(name: string) {
+  const upper = name.toUpperCase()
+  if (upper.includes("SCOOTER")) return { icon: Wind, type: "icon" }
+  if (upper.includes("SPORT")) return { icon: Zap, type: "icon" }
+  if (upper.includes("ELECTRIC") || upper.includes("EV")) return { icon: Battery, type: "icon" }
+  return { 
+    initial: name.substring(0, 2).toUpperCase(), 
+    type: "brand" 
+  }
 }
 
 export function CategoriesSection() {
+  const { categories } = useInventory()
+
   return (
-    <section className="py-16 bg-secondary/30">
+    <section className="py-12 bg-background border-b border-border">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-3">
-            Browse by Category
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+            Browse by Brand & Category
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Find the perfect bike for your needs from our wide range of categories
-          </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {/* Scrollable Container for Mobile, Wrap on Desktop */}
+        <div className="flex overflow-x-auto pb-6 -mx-4 px-4 gap-4 md:flex-wrap md:justify-center md:gap-6 lg:gap-8 scrollbar-hide">
+          <Link
+            href={`/bikes`}
+            className="group flex flex-col items-center flex-shrink-0 w-20 md:w-24 gap-3 cursor-pointer"
+          >
+            <div className="flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white border border-border shadow-sm group-hover:shadow-lg group-hover:-translate-y-1 group-hover:border-primary/50 transition-all duration-300">
+              <Bike className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+            </div>
+            <div className="text-center">
+              <h3 className="font-medium text-xs md:text-sm text-foreground whitespace-nowrap group-hover:text-primary transition-colors">
+                All Bikes
+              </h3>
+            </div>
+          </Link>
           {categories.map((category) => {
-            const Icon = iconMap[category.icon as keyof typeof iconMap]
+            const display = getCategoryIcon(category.name)
             return (
-              <button
+              <Link
+                href={`/bikes?search=${category.name}`}
                 key={category.name}
-                className="group relative flex flex-col items-center gap-4 p-6 md:p-8 rounded-2xl bg-card border border-border hover:border-primary hover:shadow-lg transition-all duration-300"
+                className="group flex flex-col items-center flex-shrink-0 w-20 md:w-24 gap-3 cursor-pointer"
               >
-                <div className="flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
-                  <Icon className="h-7 w-7 md:h-8 md:w-8" />
+                <div className="flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white border border-border shadow-sm group-hover:shadow-lg group-hover:-translate-y-1 group-hover:border-primary/50 transition-all duration-300">
+                  {display.type === "icon" && display.icon ? (
+                    <display.icon className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                  ) : (
+                    <span className="font-bold text-lg md:text-xl text-primary font-mono tracking-tighter">
+                      {display.initial}
+                    </span>
+                  )}
                 </div>
-                <div className="text-center">
-                  <h3 className="font-semibold text-sm md:text-base">{category.name}</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                    {category.count} Bikes
-                  </p>
+                <div className="text-center flex flex-col items-center">
+                  <h3 className="font-medium text-xs md:text-sm text-foreground whitespace-nowrap group-hover:text-primary transition-colors">
+                    {category.name}
+                  </h3>
+                  <span className="text-[10px] md:text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full mt-1">
+                    {category.count}
+                  </span>
                 </div>
-              </button>
+              </Link>
             )
           })}
         </div>
@@ -48,3 +76,4 @@ export function CategoriesSection() {
     </section>
   )
 }
+

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { OPEN_SELL_MODAL_EVENT } from "@/components/sell-bike-modal"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, ChevronRight, Bike } from "lucide-react"
+import { MessageCircle, ChevronRight, Bike, Search } from "lucide-react"
 import { SellBikeModal } from "@/components/sell-bike-modal"
 
 export function HeroSection() {
@@ -20,87 +20,51 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-secondary py-16 md:py-24 lg:py-32">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
-      
-      <div className="container relative mx-auto px-4">
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
-          {/* Content */}
-          <div className="flex flex-col justify-center space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center justify-center lg:justify-start">
-              <span className="rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-                Hyderabad&apos;s Trusted Bike Shop
-              </span>
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-balance">
-              Buy or Sell Your{" "}
-              <span className="text-primary">Bike</span>{" "}
-              With Confidence
-            </h1>
-            <p className="max-w-xl mx-auto lg:mx-0 text-lg text-muted-foreground text-pretty">
-              Looking for a good bike at low price? Want to sell your old bike? We are here to help. All bikes checked by experts.
-            </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="gap-2 text-base" asChild>
-                <a href="#featured">
-                  See All Bikes
-                  <ChevronRight className="h-4 w-4" />
-                </a>
-              </Button>
-              <button
-                type="button"
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-secondary px-8 text-base font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  setSellModalOpen(true)
-                }}
-              >
-                <Bike className="h-5 w-5" />
-                Sell Your Bike
-              </button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="gap-2 text-base border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white"
-                onClick={handleWhatsApp}
-              >
-                <MessageCircle className="h-5 w-5" />
-                Call Us on WhatsApp
-              </Button>
-            </div>
-            {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-4">
-              <div className="flex items-center gap-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <span className="text-xl font-bold text-primary">500+</span>
-                </div>
-                <span className="text-sm text-muted-foreground">Happy Customers</span>
+    <section className="bg-background py-8">
+      <div className="container mx-auto px-4">
+        <div className="relative overflow-hidden rounded-xl bg-primary/5 border border-primary/10">
+          <div className="grid lg:grid-cols-2 items-center">
+            {/* Content */}
+            <div className="p-8 lg:p-16 flex flex-col justify-center space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center justify-center lg:justify-start">
+                <span className="rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
+                  India's Most Trusted Bike Marketplace
+                </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <span className="text-xl font-bold text-primary">5</span>
-                </div>
-                <span className="text-sm text-muted-foreground">Star Rating</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <span className="text-xl font-bold text-primary">RC</span>
-                </div>
-                <span className="text-sm text-muted-foreground">Papers Ready</span>
+              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-foreground">
+                Find Your <br className="hidden lg:block"/> <span className="text-primary">Perfect Bike</span>
+              </h1>
+              <p className="max-w-xl mx-auto lg:mx-0 text-lg text-muted-foreground">
+                Browse verified pre-owned bikes at trusted prices.
+              </p>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center lg:justify-start pt-4">
+                <Button size="lg" className="h-12 px-8 text-base shadow-sm" asChild>
+                  <a href="/bikes">
+                    Browse Bikes
+                  </a>
+                </Button>
+                <button
+                  type="button"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-white border-2 border-primary text-primary px-8 text-base font-semibold transition-colors hover:bg-primary/5"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setSellModalOpen(true)
+                  }}
+                >
+                  <Bike className="h-5 w-5" />
+                  Sell Your Bike
+                </button>
               </div>
             </div>
-          </div>
 
-          {/* Hero Image */}
-          <div className="relative lg:order-last">
-            <div className="relative aspect-square max-w-lg mx-auto">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 to-primary/5 blur-3xl" />
+            {/* Hero Image */}
+            <div className="relative h-64 lg:h-full min-h-[400px]">
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent z-10 hidden lg:block" />
               <img
-                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop"
+                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop"
                 alt="Premium second-hand bike"
-                className="relative z-10 w-full h-full object-cover rounded-3xl shadow-2xl"
+                className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
           </div>

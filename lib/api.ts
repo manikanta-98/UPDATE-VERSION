@@ -1,4 +1,4 @@
-import type { Bike, BikesResponse } from "./types";
+import type { Bike, BikesResponse, User } from "./types";
 import { authHeaders, getToken } from "./auth";
 
 const API_URL = (
@@ -20,7 +20,9 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
       },
       cache: "no-store",
     });
-  } catch {
+    console.log(`[API] Fetched ${url} -> Status: ${res.status}`);
+  } catch (err) {
+    console.error(`[API] Network error fetching ${url}:`, err);
     throw new Error(
       `Failed to fetch (${url}). Check backend is running and CORS allows this site.`
     );
@@ -34,6 +36,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   }
 
   if (!res.ok) {
+    console.error(`[API] Request failed for ${url} -> ${res.status}`, data);
     throw new Error(data.message || `Request failed (${res.status})`);
   }
 
@@ -63,12 +66,20 @@ export const api = {
       body: JSON.stringify(body),
     }),
 
-  updateBike: (key: string | undefined, id: number, body: Partial<Bike>) =>
-    request<{ success: boolean; data: Bike }>(`/bikes/${id}`, {
+  updateBike: (id: string, body: FormData) =>
+    request<{ success: boolean; data: Bike }>(`/admin/bikes/${id}`, {
       method: "PUT",
-      headers: adminHeaders(key),
-      body: JSON.stringify(body),
+      body,
+      headers: adminHeaders(),
     }),
+
+  getAdminAnalytics: () => request<{ success: boolean; data: any }>("/admin/analytics", {
+    headers: adminHeaders(),
+  }),
+
+  getAdminUsers: () => request<{ success: boolean; data: User[] }>("/admin/users", {
+    headers: adminHeaders(),
+  }),
 
   deleteBike: (key: string | undefined, id: number) =>
     request<{ success: boolean }>(`/bikes/${id}`, {

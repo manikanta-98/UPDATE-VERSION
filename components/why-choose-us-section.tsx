@@ -35,7 +35,7 @@ const features = [
 
 export function WhyChooseUsSection() {
   return (
-    <section id="why-choose" className="py-16 bg-secondary/30">
+    <section id="why-choose" className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-3">
@@ -50,7 +50,7 @@ export function WhyChooseUsSection() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="flex gap-4 p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+              className="flex gap-4 p-6 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-md transition-all duration-300"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <feature.icon className="h-6 w-6" />

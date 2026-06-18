@@ -3,34 +3,23 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
 import {
   Menu,
   X,
   Search,
-  Sun,
-  Moon,
   MessageCircle,
-  User,
-  LogOut,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { triggerSellBikeModal } from "@/components/sell-bike-modal"
-import { useAuth } from "@/components/providers/auth-provider"
+import { useInventory } from "@/components/providers/inventory-provider"
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "Buy Bikes", href: "/#featured" },
+  { name: "Bikes", href: "/bikes" },
   { name: "Sell Bike", href: "#", openSellModal: true },
-  { name: "Exchange", href: "/#exchange" },
+  { name: "Finance", href: "/finance" },
+  { name: "About", href: "/#why-choose-us" },
   { name: "Contact", href: "/#contact" },
 ]
 
@@ -41,9 +30,9 @@ interface NavbarProps {
 export function Navbar({ minimalAuth = false }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const { theme, setTheme } = useTheme()
+  const [logoError, setLogoError] = useState(false)
   const router = useRouter()
-  const { user, isAuthenticated, logout, loading } = useAuth()
+  const { categories } = useInventory()
 
   const handleWhatsApp = () => {
     window.open(
@@ -52,193 +41,137 @@ export function Navbar({ minimalAuth = false }: NavbarProps) {
     )
   }
 
-  const handleLogout = () => {
-    logout()
-    setIsOpen(false)
-    router.push("/")
-  }
-
-  const firstName = user?.name?.split(" ")[0] || "User"
-
-  const authButtons = (
-    <>
-      {loading ? (
-        <div className="h-9 w-24 rounded-md bg-muted animate-pulse" />
-      ) : isAuthenticated && user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-2 h-10 px-3 hover:bg-secondary max-w-[200px]"
-            >
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
-                <User className="h-4 w-4" />
+  return (
+    <div className="sticky top-0 z-50 w-full flex flex-col">
+      <header className="border-b border-border bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between gap-4">
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="relative flex items-center justify-center h-12 w-12 bg-white rounded-full overflow-hidden shadow-sm transition-transform duration-300 group-hover:scale-105 border-2 border-white">
+                {!logoError ? (
+                  <img
+                    src="/logo.png"
+                    alt="Bikes4U Hyderabad"
+                    className="h-full w-full object-contain"
+                    onError={() => setLogoError(true)}
+                  />
+                ) : (
+                  <span className="text-xs font-black italic tracking-tighter text-primary">B4U</span>
+                )}
               </div>
-              <div className="hidden sm:flex flex-col items-start leading-tight min-w-0">
-                <span className="text-[10px] text-muted-foreground">Hello,</span>
-                <span className="text-sm font-semibold truncate max-w-[120px]">
-                  {firstName}
-                </span>
+            </Link>
+
+            {!minimalAuth && (
+              <div className="hidden flex-1 max-w-2xl lg:flex mx-8">
+                <div className="relative w-full flex">
+                  <Input
+                    type="search"
+                    placeholder="Search for bikes, brands and more..."
+                    className="w-full pl-4 pr-12 bg-white text-black border-none h-10 rounded-l-md rounded-r-none focus-visible:ring-0"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Button className="h-10 rounded-l-none rounded-r-md bg-accent hover:bg-accent/90 text-accent-foreground px-6" onClick={() => window.location.href = `/bikes?search=${searchQuery}`}>
+                    <Search className="h-5 w-5" />
+                  </Button>
+                </div>
               </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52">
-            <div className="px-3 py-2 border-b border-border">
-              <p className="text-sm font-semibold truncate">{user.name}</p>
-              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-            </div>
-            <DropdownMenuItem asChild>
-              <Link href="/profile">My Profile</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/#featured">Browse Bikes</Link>
-            </DropdownMenuItem>
-            {user.role === "admin" && (
-              <DropdownMenuItem asChild>
-                <Link href="/admin">Admin Dashboard</Link>
-              </DropdownMenuItem>
             )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="text-destructive">
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" className="font-semibold" asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button size="sm" className="font-semibold rounded-sm" asChild>
-            <Link href="/signup">Sign Up</Link>
-          </Button>
+
+            {!minimalAuth && (
+              <nav className="hidden lg:flex items-center gap-6">
+                {navLinks.map((link) =>
+                  link.openSellModal ? (
+                    <button
+                      key={link.name}
+                      onClick={triggerSellBikeModal}
+                      className="text-sm font-semibold transition-colors hover:text-accent"
+                    >
+                      {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="text-sm font-semibold transition-colors hover:text-accent"
+                    >
+                      {link.name}
+                    </Link>
+                  )
+                )}
+              </nav>
+            )}
+
+
+
+            <div className="flex lg:hidden items-center gap-2">
+              {!minimalAuth && (
+                <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="text-white">
+                  {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {!minimalAuth && (
+        <div className="hidden lg:block bg-background border-b shadow-sm">
+          <div className="container mx-auto px-4">
+            <div className="flex h-12 items-center gap-6 text-sm overflow-x-auto no-scrollbar whitespace-nowrap">
+              <Link href="/bikes" className="hover:text-primary transition-colors flex items-center gap-1 font-bold">
+                <Menu className="h-4 w-4" /> All Categories
+              </Link>
+              {categories.slice(0, 10).map((cat) => (
+                <Link key={cat.name} href={`/bikes?search=${cat.name}`} className="hover:text-primary transition-colors">
+                  {cat.name} <span className="text-xs text-muted-foreground ml-1">({cat.count})</span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       )}
-    </>
-  )
 
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 group">
+      {isOpen && !minimalAuth && (
+        <div className="lg:hidden bg-background border-b animate-in slide-in-from-top-2 absolute w-full top-[64px] left-0 shadow-lg z-40">
+          <div className="p-4 flex flex-col gap-4">
             <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <img
-                src="/logo.png"
-                alt="AK Bikes Hyderabad"
-                className="relative h-14 w-auto drop-shadow-md transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-          </Link>
-
-          {!minimalAuth && (
-            <div className="hidden flex-1 max-w-md lg:flex">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search bikes by name, brand..."
-                  className="w-full pl-10 bg-secondary"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
-
-          {!minimalAuth && (
-            <nav className="hidden lg:flex items-center gap-6">
-              {navLinks.map((link) =>
-                link.openSellModal ? (
-                  <button
-                    key={link.name}
-                    type="button"
-                    className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                    onClick={() => triggerSellBikeModal()}
-                  >
-                    {link.name}
-                  </button>
-                ) : (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.name}
-                  </Link>
-                )
-              )}
-            </nav>
-          )}
-
-          <div className="hidden lg:flex items-center gap-2">
-            {authButtons}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full"
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-            {!minimalAuth && (
-              <Button
-                onClick={handleWhatsApp}
-                className="gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white"
-              >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp
-              </Button>
-            )}
-          </div>
-
-          <div className="flex lg:hidden items-center gap-2">
-            {!minimalAuth && authButtons}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full"
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button>
-            {!minimalAuth && (
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
-                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {isOpen && !minimalAuth && (
-          <div className="lg:hidden py-4 border-t border-border">
-            <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search bikes..."
-                className="w-full pl-10 bg-secondary"
+                placeholder="Search..."
+                className="pl-10 w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <Button
+                size="sm"
+                className="absolute right-1 top-1 bottom-1 h-auto py-0"
+                onClick={() => {
+                  setIsOpen(false)
+                  window.location.href = `/bikes?search=${searchQuery}`
+                }}
+              >
+                Go
+              </Button>
             </div>
             <nav className="flex flex-col gap-2">
+              <div className="font-bold mb-2 uppercase text-xs text-muted-foreground tracking-wider">Categories</div>
+              {categories.map((cat) => (
+                <Link key={cat.name} href={`/bikes?search=${cat.name}`} className="px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary rounded-lg" onClick={() => setIsOpen(false)}>
+                  {cat.name} <span className="text-xs text-muted-foreground ml-1">({cat.count})</span>
+                </Link>
+              ))}
+              <div className="border-t my-2" />
               {navLinks.map((link) =>
                 link.openSellModal ? (
                   <button
                     key={link.name}
-                    type="button"
-                    className="w-full px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary rounded-lg"
                     onClick={() => {
                       setIsOpen(false)
                       triggerSellBikeModal()
                     }}
+                    className="px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary rounded-lg text-left"
                   >
                     {link.name}
                   </button>
@@ -246,60 +179,24 @@ export function Navbar({ minimalAuth = false }: NavbarProps) {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className="px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary rounded-lg"
+                    className="px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary rounded-lg"
                     onClick={() => setIsOpen(false)}
                   >
                     {link.name}
                   </Link>
                 )
               )}
-              <div className="flex gap-2 mt-2">
-                {isAuthenticated && user ? (
-                  <>
-                    <div className="w-full px-3 py-2 mb-1 rounded-lg bg-secondary/60">
-                      <p className="text-xs text-muted-foreground">Hello,</p>
-                      <p className="text-sm font-semibold">{user.name}</p>
-                    </div>
-                    <Button variant="outline" className="flex-1" asChild>
-                      <Link href="/profile" onClick={() => setIsOpen(false)}>
-                        My Profile
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      className="flex-1 gap-1"
-                      onClick={handleLogout}
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Logout
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="outline" className="flex-1" asChild>
-                      <Link href="/login" onClick={() => setIsOpen(false)}>
-                        Login
-                      </Link>
-                    </Button>
-                    <Button className="flex-1" asChild>
-                      <Link href="/signup" onClick={() => setIsOpen(false)}>
-                        Signup
-                      </Link>
-                    </Button>
-                  </>
-                )}
-              </div>
               <Button
                 onClick={handleWhatsApp}
-                className="mt-2 gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white"
+                className="mt-4 gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white w-full"
               >
                 <MessageCircle className="h-4 w-4" />
                 WhatsApp Us
               </Button>
             </nav>
           </div>
-        )}
-      </div>
-    </header>
+        </div>
+      )}
+    </div>
   )
 }

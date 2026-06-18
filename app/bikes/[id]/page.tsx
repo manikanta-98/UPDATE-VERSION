@@ -10,8 +10,10 @@ import {
   MessageCircle,
   ChevronLeft,
   ChevronRight,
+  Phone,
 } from "lucide-react"
 import { Navbar } from "@/components/navbar"
+import { FeaturedBikesSection } from "@/components/featured-bikes-section"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -25,6 +27,7 @@ import {
   statusLabel,
 } from "@/lib/bike-helpers"
 import { BikeImage } from "@/components/bike-image"
+import { EmiCalculator } from "@/components/emi-calculator"
 
 export default function BikeDetailPage() {
   const params = useParams()
@@ -71,7 +74,7 @@ export default function BikeDetailPage() {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8">
         <Button variant="ghost" asChild className="mb-6 gap-2">
-          <Link href="/#featured">
+          <Link href="/bikes">
             <ArrowLeft className="h-4 w-4" />
             Back to bikes
           </Link>
@@ -87,14 +90,14 @@ export default function BikeDetailPage() {
           <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center">
             <p className="text-destructive mb-4">{error}</p>
             <Button asChild variant="outline">
-              <Link href="/#featured">Browse all bikes</Link>
+              <Link href="/bikes">Browse all bikes</Link>
             </Button>
           </div>
         )}
 
         {!loading && bike && (
           <div className="grid lg:grid-cols-2 gap-10">
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-secondary border">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted/30 border">
               {images.length > 1 && images[0] !== PLACEHOLDER ? (
                 <BikeImage
                   src={images[imageIndex]}
@@ -162,45 +165,96 @@ export default function BikeDetailPage() {
               </Badge>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <p className="text-sm font-medium text-primary uppercase tracking-wide mb-1">
-                  AK Bikes
-                </p>
-                <h1 className="text-3xl font-bold">{bike.model}</h1>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
+                    AK Bikes Premium
+                  </p>
+                  <Badge
+                    className={
+                      isAvailable(bike.status)
+                        ? "bg-success text-success-foreground"
+                        : "bg-destructive text-destructive-foreground"
+                    }
+                  >
+                    {statusLabel(bike.status)}
+                  </Badge>
+                </div>
+                <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
+                  {bike.model}
+                </h1>
               </div>
 
-              <div className="flex flex-wrap gap-4 text-muted-foreground">
-                <span className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {bike.year ?? "Year N/A"}
-                </span>
-                {bike.number && (
-                  <span className="font-mono text-sm bg-secondary px-3 py-1 rounded-lg">
-                    {bike.number}
-                  </span>
+              <div className="p-6 rounded-2xl border-2 border-border bg-card shadow-sm space-y-4">
+                <p className="text-sm text-muted-foreground uppercase tracking-widest font-semibold">
+                  Vehicle Price
+                </p>
+                <p className="text-4xl font-bold text-accent">
+                  {formatPrice(bike.price)}
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border mt-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Registration Year</p>
+                    <p className="font-medium flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-primary" />
+                      {bike.year ?? "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Registration No.</p>
+                    <p className="font-mono font-medium">
+                      {bike.number || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Vehicle Overview</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {bike.description || "No detailed description provided for this vehicle."}
+                </p>
+              </div>
+
+              <div className="pt-4">
+                {bike.price && bike.price > 0 && (
+                  <EmiCalculator bikePrice={bike.price} bikeModel={bike.model} />
                 )}
               </div>
 
-              <p className="text-3xl font-bold text-primary">{formatPrice(bike.price)}</p>
-
-              <p className="text-muted-foreground leading-relaxed">{bike.description}</p>
-
-              <div className="flex flex-wrap gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Button
                   size="lg"
-                  className="gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white"
+                  className="flex-1 h-14 text-lg gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md"
                   disabled={!isAvailable(bike.status)}
                   onClick={() => window.open(getWhatsAppLink(bike), "_blank")}
                 >
-                  <MessageCircle className="h-5 w-5" />
-                  WhatsApp Inquiry
+                  <MessageCircle className="h-6 w-6" />
+                  WhatsApp
                 </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/#featured">View more bikes</Link>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="flex-1 h-14 text-lg gap-2 shadow-md border-2 border-primary text-primary hover:bg-primary/5" 
+                  asChild
+                >
+                  <a href="tel:+919676499794">
+                    <Phone className="h-5 w-5" />
+                    Call Seller
+                  </a>
                 </Button>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Similar Bikes Section */}
+        {!loading && bike && (
+          <div className="mt-20 pt-10 border-t border-border">
+            <h2 className="text-2xl font-bold mb-6">Similar Bikes You Might Like</h2>
+            <FeaturedBikesSection />
           </div>
         )}
       </main>

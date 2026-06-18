@@ -33,7 +33,7 @@ export function CustomerReviewsSection() {
           {reviews.map((review) => (
             <div
               key={review.id}
-              className="relative flex flex-col p-6 rounded-2xl bg-card border border-border"
+              className="relative flex flex-col p-8 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/20" />
               <div className="flex items-center gap-4 mb-4">
@@ -66,8 +66,8 @@ export function CustomerReviewsSection() {
 
         {/* Mobile Carousel */}
         <div className="md:hidden">
-          <div className="relative flex flex-col p-6 rounded-2xl bg-card border border-border">
-            <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/20" />
+          <div className="relative flex flex-col p-8 rounded-2xl bg-card border border-border shadow-sm">
+            <Quote className="absolute top-6 right-6 h-8 w-8 text-primary/20" />
             <div className="flex items-center gap-4 mb-4">
               <img
                 src={reviews[currentIndex].image}

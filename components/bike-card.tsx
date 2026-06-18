@@ -15,6 +15,7 @@ import {
   isAvailable,
   statusLabel,
 } from "@/lib/bike-helpers"
+import { getStartingEMI } from "@/lib/emi"
 import { BikeImage } from "@/components/bike-image"
 
 interface BikeCardProps {
@@ -33,6 +34,7 @@ export function BikeCard({ bike, isHighlighted = false, onHighlight }: BikeCardP
   const [imgSrc, setImgSrc] = useState(primaryFromApi || PLACEHOLDER)
   const displayImages = getBikeImages(bike)
   const available = isAvailable(bike.status)
+  const startingEmi = getStartingEMI(bike.price)
 
   useEffect(() => {
     const next = bike.images?.[0]?.trim()
@@ -65,16 +67,16 @@ export function BikeCard({ bike, isHighlighted = false, onHighlight }: BikeCardP
 
   return (
     <div
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 cursor-pointer ${
+      className={`group relative flex flex-col overflow-hidden rounded-[20px] border bg-white transition-all duration-300 cursor-pointer ${
         isHighlighted
-          ? "z-50 scale-105 shadow-2xl border-primary ring-4 ring-primary/30"
-          : "border-border hover:shadow-xl hover:border-primary/50"
+          ? "z-50 shadow-xl border-primary"
+          : "border-border hover:shadow-xl hover:border-primary/50 hover:-translate-y-1"
       }`}
       onClick={onHighlight}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-secondary group/image">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted/30 group/image">
         {!imageLoaded && (
-          <div className="absolute inset-0 animate-pulse bg-secondary" />
+          <div className="absolute inset-0 animate-pulse bg-muted/30" />
         )}
 
         <div className="relative h-full w-full">
@@ -197,15 +199,20 @@ export function BikeCard({ bike, isHighlighted = false, onHighlight }: BikeCardP
           {bike.description}
         </p>
 
-        <div className="mb-4">
-          <p className="text-2xl font-bold text-primary">{formatPrice(bike.price)}</p>
+        <div className="mb-2">
+          <p className="text-2xl font-bold text-foreground">{formatPrice(bike.price)}</p>
+          {startingEmi && (
+            <p className="text-xs font-semibold text-[#0055A5] mt-0.5">
+              EMI Starts From ₹{startingEmi.toLocaleString("en-IN")}/month
+            </p>
+          )}
         </div>
 
-        <div className="mt-auto flex gap-2">
+        <div className="mt-auto flex flex-col gap-2 pt-2">
           <Button
             variant="outline"
             size="sm"
-            className="flex-1 gap-1.5"
+            className="w-full gap-1.5 border-border hover:bg-primary hover:text-white hover:border-primary transition-colors text-primary border-primary"
             asChild
             onClick={(e) => e.stopPropagation()}
           >
@@ -216,12 +223,12 @@ export function BikeCard({ bike, isHighlighted = false, onHighlight }: BikeCardP
           </Button>
           <Button
             size="sm"
-            className="flex-1 gap-1.5 bg-[#25D366] hover:bg-[#128C7E] text-white"
+            className="w-full gap-1.5 bg-[#25D366] hover:bg-[#128C7E] text-white shadow-sm"
             onClick={handleWhatsApp}
             disabled={!available}
           >
             <MessageCircle className="h-4 w-4" />
-            WhatsApp Inquiry
+            WhatsApp
           </Button>
         </div>
       </div>

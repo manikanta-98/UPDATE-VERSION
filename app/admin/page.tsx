@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Dialog,
@@ -34,7 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { api, formatPrice } from "@/lib/api"
-import type { Bike as BikeType, BikeStats } from "@/lib/types"
+import type { Bike as BikeType, BikeStats, User } from "@/lib/types"
 import { getBikeImages, normalizeImageUrl, PLACEHOLDER, statusLabel } from "@/lib/bike-helpers"
 import { BikeImage } from "@/components/bike-image"
 import { clearAdminSession, getAdminApiKey } from "@/lib/admin-session"
@@ -152,8 +153,8 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <header className="border-b bg-background sticky top-0 z-10">
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-background sticky top-0 z-10 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <BikeIcon className="h-8 w-8 text-primary" />
@@ -174,37 +175,39 @@ export default function AdminPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8 space-y-8">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <Card className="shadow-md border-border/50 rounded-[20px]">
+            <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 Total Bikes
               </CardTitle>
+              <BikeIcon className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">{stats.total}</p>
+              <p className="text-4xl font-extrabold">{stats.total}</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <Card className="shadow-md border-border/50 rounded-[20px]">
+            <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 Available
               </CardTitle>
+              <CheckCircle className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-success">{stats.available}</p>
+              <p className="text-4xl font-extrabold text-success">{stats.available}</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Sold</CardTitle>
+          <Card className="shadow-md border-border/50 rounded-[20px]">
+            <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Sold</CardTitle>
+              <XCircle className="h-4 w-4 text-destructive" />
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold text-destructive">{stats.sold}</p>
+              <p className="text-4xl font-extrabold text-destructive">{stats.sold}</p>
             </CardContent>
           </Card>
         </div>
-
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -254,31 +257,31 @@ export default function AdminPage() {
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         ) : (
-          <div className="rounded-xl border bg-card overflow-hidden">
+          <div className="rounded-[20px] border bg-card overflow-hidden shadow-md">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="p-3 text-left">ID</th>
-                    <th className="p-3 text-left">Model</th>
-                    <th className="p-3 text-left">Year</th>
-                    <th className="p-3 text-left">Number</th>
-                    <th className="p-3 text-left">Price</th>
-                    <th className="p-3 text-left">Status</th>
-                    <th className="p-3 text-right">Actions</th>
+                  <tr className="border-b bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+                    <th className="p-4 text-left font-semibold">ID</th>
+                    <th className="p-4 text-left font-semibold">Model</th>
+                    <th className="p-4 text-left font-semibold">Year</th>
+                    <th className="p-4 text-left font-semibold">Number</th>
+                    <th className="p-4 text-left font-semibold">Price</th>
+                    <th className="p-4 text-left font-semibold">Status</th>
+                    <th className="p-4 text-right font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bikes.map((bike) => (
                     <tr
                       key={`${bike.id}-${bike.number ?? bike._id ?? "row"}`}
-                      className="border-b last:border-0 hover:bg-muted/30"
+                      className="border-b last:border-0 hover:bg-muted/30 even:bg-muted/10 transition-colors"
                     >
-                      <td className="p-3 font-mono">{bike.id}</td>
-                      <td className="p-3 font-medium">{bike.model}</td>
-                      <td className="p-3">{bike.year ?? "—"}</td>
-                      <td className="p-3 font-mono text-xs">{bike.number ?? "—"}</td>
-                      <td className="p-3">{formatPrice(bike.price)}</td>
+                      <td className="p-4 font-mono text-muted-foreground">{bike.id}</td>
+                      <td className="p-4 font-medium text-foreground">{bike.model}</td>
+                      <td className="p-4 text-muted-foreground">{bike.year ?? "—"}</td>
+                      <td className="p-4 font-mono text-xs">{bike.number ?? "—"}</td>
+                      <td className="p-4 font-semibold">{formatPrice(bike.price)}</td>
                       <td className="p-3">
                         <Badge
                           className={

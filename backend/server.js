@@ -8,6 +8,7 @@ import { connectDB } from "./src/config/db.js";
 import bikeRoutes from "./src/routes/bikeRoutes.js";
 import sellRoutes from "./src/routes/sellRoutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
 import { notFound, errorHandler } from "./src/middleware/errorHandler.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -51,13 +52,14 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/bikes", bikeRoutes);
 app.use("/api/sell", sellRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
 
 async function start() {
   await connectDB();
-  app.listen(PORT, () => {
+  app.listen(PORT, "127.0.0.1", () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }

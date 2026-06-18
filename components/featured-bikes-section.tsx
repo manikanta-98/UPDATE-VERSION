@@ -15,7 +15,7 @@ import { BikeCard } from "@/components/bike-card"
 import { api } from "@/lib/api"
 import type { Bike } from "@/lib/types"
 
-const PAGE_SIZE = 12
+const PAGE_SIZE = 8
 
 function bikeKey(bike: Bike) {
   return `${bike.id}-${bike.number ?? bike._id ?? "na"}`

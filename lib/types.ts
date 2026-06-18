@@ -1,5 +1,17 @@
 export type BikeStatus = "unsold" | "sold";
 
+export interface User {
+  id?: string;
+  _id?: string;
+  name: string;
+  mobile: string;
+  email?: string;
+  role: string;
+  createdAt?: string;
+  lastLogin?: string;
+}
+
+
 export interface Bike {
   _id?: string;
   id: number;

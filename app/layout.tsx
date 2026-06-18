@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { ThemeProvider } from '@/components/theme-provider'
-import { AuthProvider } from '@/components/providers/auth-provider'
+import { InventoryProvider } from '@/components/providers/inventory-provider'
 import './globals.css'
 
 const geistSans = Geist({ 
@@ -74,15 +73,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="bg-background">
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>{children}</AuthProvider>
-        </ThemeProvider>
+      <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+        <InventoryProvider>
+          {children}
+        </InventoryProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
